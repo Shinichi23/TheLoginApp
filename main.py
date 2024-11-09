@@ -1,10 +1,12 @@
 import re
+from utils import *
 
 class Person:
     def __init__(self, name, email, password):
         self.name = name
         self.email = email
-        self.password = password
+        self.salt = generate_salt()
+        self.password = hash_password(password, self.salt)
 
     def __str__(self):
         return f"Name: {self.name}\nEmail: {self.email}\nPassword: ########"
@@ -62,7 +64,8 @@ def login():
         password = input("Input your password: \n")
 
         for user in registers:
-            if name == user.name and email == user.email and password == user.password:
+            if name == user.name and email == user.email and \
+               verify_password(user.password, user.salt, password):
                 print("Welcome to the main page")
                 while True:
                     stop = input("Q to quit: \n")
